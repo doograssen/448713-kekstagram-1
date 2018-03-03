@@ -1,16 +1,14 @@
 'use strict';
 
 (function () {
-  var ENTER_KEY_CODE = 13;
+  var ENTER_KEY_CODE = 13; // код кнопки enter
   var ATTRIBUTE_FILTER_NAMES = {'popular': 'likes', 'discussed': 'comments', 'random': 'random'};
-  var overlay = document.querySelector('.gallery-overlay');
-  var uploadForm = document.querySelector('#upload-select-image');
-  var pickFile = uploadForm.querySelector('#upload-file');
-  var framingWindow = uploadForm.querySelector('.upload-overlay');
-  var picturesContainer = document.querySelector('.pictures');
-  var filtersElement = document.querySelector('.filters');
-  var galleryFilter = document.querySelector('.filters');
-
+  var overlay = document.querySelector('.gallery-overlay'); // окно просмотра полноформатной картинки
+  var uploadForm = document.querySelector('#upload-select-image'); // окно формы предпросмотра  и редактирования загруженного изображения
+  var pickFile = uploadForm.querySelector('#upload-file'); // input загрузки изображениЯ
+  var framingWindow = uploadForm.querySelector('.upload-overlay'); // картинка с фильтрами
+  var picturesContainerElement = document.querySelector('.pictures');// контейнер с изображениями
+  var filtersElement = document.querySelector('.filters');// радио переключетели сортировки картинок
 
   /* ------ Закрытие окна по кнопке -------------------------------------*/
 
@@ -26,20 +24,21 @@
   }
 
   /* ------ Назначение обработчиков событий для фото ------------------*/
+  /* ------ открытие окна с предпросмотром  ---------------------------*/
   function setPictureListeners(obj, data) {
     obj.addEventListener('click', function (evt) {
       evt.preventDefault();
-      window.preview.showPictureSample(data);
+      window.preview.fillPictureSample(data);
       window.utils.showPopup(overlay);
     });
   }
 
-  /* ------ Назначение обработчиков событий для галереи ---------------*/
+  /* ------ Назначение обработчиков событий для всей галереи ---------------*/
   function setGalleryListeners(picteresData) {
-    var pictures = picturesContainer.querySelectorAll('.picture');
-    var arrayLength = pictures.length;
+    var arrayElements = picturesContainerElement.querySelectorAll('.picture');
+    var arrayLength = arrayElements.length;
     for (var i = 0; i < arrayLength; i++) {
-      setPictureListeners(pictures[i], picteresData[i]);
+      setPictureListeners(arrayElements[i], picteresData[i]);
     }
     var closeButton = overlay.querySelector('.gallery-overlay-close');
     setCloseBtnListener(closeButton, overlay);
@@ -48,14 +47,15 @@
   function setFramingListeners() {
     pickFile.addEventListener('change', function () {
       window.form.resetImage();
-      // window.form.resetEffect(window.form.effect);
+      window.form.resetEffect(window.effectControl.current());
       window.utils.showPopup(framingWindow);
     });
-    var closeButton = uploadForm.querySelector('.upload-form-cancel');
+    var closeButton = uploadForm.querySelector('.upload-form-cancel'); // крестик над фото
     setCloseBtnListener(closeButton, framingWindow);
   }
 
-  var sortByAttrbute = function (attribute, picturesArray) {
+  // применение фильтров к галерее
+  var filterClick = function (attribute, picturesArray) {
     return picturesArray.slice().sort(function (a, b) {
       if (attribute === 'comments') {
         return b[attribute].length - a[attribute].length;
@@ -68,27 +68,29 @@
   };
 
   var successXHRExecution = function (response) {
+    var galleryFilter = document.querySelector('.filters');
     galleryFilter.addEventListener('change', function (evt) {
       var evtTarget = evt.target;
       var picturesData = response.slice();
       if (evtTarget.type === 'radio') {
-        picturesData = sortByAttrbute(ATTRIBUTE_FILTER_NAMES[evtTarget.value], response);
-        var fragment = window.picture.getPicturesFragment(picturesData);
-        while (picturesContainer.firstChild) {
-          picturesContainer.removeChild(picturesContainer.firstChild);
+        picturesData = filterClick(ATTRIBUTE_FILTER_NAMES[evtTarget.value], response);
+        var fragment = window.picture.fillFragment(picturesData);
+        while (picturesContainerElement.firstChild) {
+          picturesContainerElement.removeChild(picturesContainerElement.firstChild);
         }
-        picturesContainer.appendChild(fragment);
+        picturesContainerElement.appendChild(fragment);
         setGalleryListeners(picturesData);
       }
     });
-    var fragment = window.picture.getPicturesFragment(response);
-    picturesContainer.appendChild(fragment);
+    var fragment = window.picture.fillFragment(response);
+    picturesContainerElement.appendChild(fragment);
     setGalleryListeners(response);
     filtersElement.classList.remove('filters-inactive');
   };
 
   /* -----запрос загрузки данных-------------------------------------------------------------*/
-  window.backend.load(successXHRExecution, window.backend.showServerError);
+  window.backend.load(successXHRExecution, window.backend.serverError);
 
   setFramingListeners();
+
 })();
