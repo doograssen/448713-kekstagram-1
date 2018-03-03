@@ -67,6 +67,15 @@
     });
   };
 
+  var filterChange = function (data) {
+    var fragment = window.picture.fillFragment(data);
+    while (picturesContainerElement.firstChild) {
+      picturesContainerElement.removeChild(picturesContainerElement.firstChild);
+    }
+    picturesContainerElement.appendChild(fragment);
+    setGalleryListeners(data);
+  };
+
   var successXHRExecution = function (response) {
     var galleryFilter = document.querySelector('.filters');
     galleryFilter.addEventListener('change', function (evt) {
@@ -74,12 +83,7 @@
       var picturesData = response.slice();
       if (evtTarget.type === 'radio') {
         picturesData = filterClick(ATTRIBUTE_FILTER_NAMES[evtTarget.value], response);
-        var fragment = window.picture.fillFragment(picturesData);
-        while (picturesContainerElement.firstChild) {
-          picturesContainerElement.removeChild(picturesContainerElement.firstChild);
-        }
-        picturesContainerElement.appendChild(fragment);
-        setGalleryListeners(picturesData);
+        window.debounce(filterChange(picturesData));
       }
     });
     var fragment = window.picture.fillFragment(response);
