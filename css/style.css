@@ -869,3 +869,18 @@ input[type=radio]:checked + .upload-effect-label .upload-effect-preview {
 .footer-social-item-vk {
   background-position: -84px 0;
 }
+
+.error-message-block{
+  font-size: 16px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  width: 620px;
+  min-height: 50px;
+  padding: 20px;
+  border: solid 1px #cccccc;
+  border-radius: 4px;
+  z-index: 100;
+}
