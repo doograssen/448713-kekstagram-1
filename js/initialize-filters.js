@@ -44,6 +44,8 @@
       }
     };
 
+    displayEffectRangeElement();
+
     var setHandlePosition = function (value) {
       var position = ((value / effectNumberInput.getAttribute('max')) * 100).toFixed(1) + '%';
       handleElement.style.left = position;

@@ -12,7 +12,7 @@
   var DECREMENT_FLAG = -1;
   var uploadForm = document.querySelector('#upload-select-image');
   var framingWindow = uploadForm.querySelector('.upload-overlay');
-  var effectNumberInput = framingWindow.querySelector('.upload-effect-level-value');
+  // var effectNumberInput = framingWindow.querySelector('.upload-effect-level-value');
   var effectControls = framingWindow.querySelector('.upload-effect-controls');
   var hashTagInput = uploadForm.querySelector('.upload-form-hashtags');
   var incrementSizeButton = framingWindow.querySelector('.upload-resize-controls-button-inc');
