@@ -43,7 +43,6 @@
         effectRangeElement.style.display = 'none';
       }
     };
-
     displayEffectRangeElement();
 
     var setHandlePosition = function (value) {
