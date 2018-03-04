@@ -10,8 +10,9 @@
   var picturesContainerElement = document.querySelector('.pictures');// контейнер с изображениями
   var filtersElement = document.querySelector('.filters');// радио переключетели сортировки картинок
 
-  /* ------ Закрытие окна по кнопке -------------------------------------*/
-
+  // --------------------------------------------------------------------------------------------
+  // ------ Закрытие окна по кнопке -------------------------------------------------------------
+  // --------------------------------------------------------------------------------------------
   function setCloseBtnListener(btnElem, elemToClose) {
     btnElem.addEventListener('click', function () {
       window.utils.closePopup(elemToClose);
@@ -23,8 +24,9 @@
     });
   }
 
-  /* ------ Назначение обработчиков событий для фото ------------------*/
-  /* ------ открытие окна с предпросмотром  ---------------------------*/
+  // --------------------------------------------------------------------------------------------
+  // ------ Назначение обработчиков событий для фото --------------------------------------------
+  // ------ открытие окна с предпросмотром  ----------------------------------------------------
   function setPictureListeners(obj, data) {
     obj.addEventListener('click', function (evt) {
       evt.preventDefault();
@@ -32,8 +34,9 @@
       window.utils.showPopup(overlay);
     });
   }
-
-  /* ------ Назначение обработчиков событий для всей галереи ---------------*/
+  // --------------------------------------------------------------------------------------------
+  // ------ Назначение обработчиков событий для всей галереи ------------------------------------
+  // --------------------------------------------------------------------------------------------
   function setGalleryListeners(picteresData) {
     var arrayElements = picturesContainerElement.querySelectorAll('.picture');
     var arrayLength = arrayElements.length;
@@ -43,7 +46,9 @@
     var closeButton = overlay.querySelector('.gallery-overlay-close');
     setCloseBtnListener(closeButton, overlay);
   }
-
+  // --------------------------------------------------------------------------------------------
+  // ------------Обработчики для окна с загруженным изображением --------------------------------
+  // --------------------------------------------------------------------------------------------
   function setFramingListeners() {
     pickFile.addEventListener('change', function () {
       window.form.resetImage();
@@ -53,9 +58,10 @@
     var closeButton = uploadForm.querySelector('.upload-form-cancel'); // крестик над фото
     setCloseBtnListener(closeButton, framingWindow);
   }
-
-  // применение фильтров к галерее
-  var filterClick = function (attribute, picturesArray) {
+  // --------------------------------------------------------------------------------------------
+  // ------------------------ применение фильтров к галерее -------------------------------------
+  // --------------------------------------------------------------------------------------------
+  var galleryFilterSelect = function (attribute, picturesArray) {
     return picturesArray.slice().sort(function (a, b) {
       if (attribute === 'comments') {
         return b[attribute].length - a[attribute].length;
@@ -67,7 +73,7 @@
     });
   };
 
-  var filterChange = function (data) {
+  var galleryFilterApply = function (data) {
     var fragment = window.picture.fillFragment(data);
     while (picturesContainerElement.firstChild) {
       picturesContainerElement.removeChild(picturesContainerElement.firstChild);
@@ -82,8 +88,8 @@
       var evtTarget = evt.target;
       var picturesData = response.slice();
       if (evtTarget.type === 'radio') {
-        picturesData = filterClick(ATTRIBUTE_FILTER_NAMES[evtTarget.value], response);
-        window.debounce(filterChange(picturesData));
+        picturesData = galleryFilterSelect(ATTRIBUTE_FILTER_NAMES[evtTarget.value], response);
+        window.debounce(galleryFilterApply(picturesData));
       }
     });
     var fragment = window.picture.fillFragment(response);
@@ -92,7 +98,9 @@
     filtersElement.classList.remove('filters-inactive');
   };
 
-  /* -----запрос загрузки данных-------------------------------------------------------------*/
+  // --------------------------------------------------------------------------------------------
+  // ----- Запрос загрузки данных ----------------------------------------------------------------
+  // --------------------------------------------------------------------------------------------
   window.backend.load(successXHRExecution, window.backend.serverError);
 
   setFramingListeners();

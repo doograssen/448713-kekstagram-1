@@ -42,7 +42,7 @@
       this.tagChecks.count = this.validateCount();
       this.tagChecks.hash = this.validateHash();
       this.tagChecks.length = this.validateLength();
-      this.tagChecks.dublicate = this.validateDublicat(this.pistureHashtags);
+      this.tagChecks.dublicate = this.validateDuplicate(this.pistureHashtags);
       this.setMessage();
     },
     validateCount: function () {
@@ -72,14 +72,14 @@
       }
       return hashtagCorrectLength;
     },
-    validateDublicat: function (arr) {
+    validateDuplicate: function (arr) {
       var obj = {};
       for (var i = 0; i < arr.length; i++) {
         var str = arr[i].toLowerCase();
         if (str in obj) {
           return true;
         } else {
-          obj[str] = true; // запомнить строку в виде свойства объекта
+          obj[str] = true;
         }
       }
       return false;
@@ -99,10 +99,9 @@
   };
 
   // --------------------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------------------
+  // -------------------------Функции работы с выбранным изображением ---------------------------
   // --------------------------------------------------------------------------------------------
   var imagePreview = {
-    // currentEffect: INITIAL_PICTURE_EFFECT,
     resizeImage: function (size) {
       imageSample.style.transform = 'scale(' + size / 100 + ')';
     },
@@ -131,7 +130,7 @@
   };
 
   // --------------------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------------------
+  // ------------------------------------Регулировка уровня эффекта -----------------------------
   // --------------------------------------------------------------------------------------------
   var effectLevelHandle = {
     EFFECT_INPUT_MAX_VALUES: {'none': 0, 'chrome': 100, 'sepia': 100, 'marvin': 100, 'phobos': 5, 'heat': 300},
@@ -246,6 +245,9 @@
     effectLevelHandle.setHandlePosition(evt.target.value);
   });
 
+  // --------------------------------------------------------------------------------------------
+  // -----------------------------Проверка ввода комментария-------------------------------------
+  // --------------------------------------------------------------------------------------------
   comment.addEventListener('input', function (evt) {
     var messageText = '';
     var evtTarget = evt.target;
@@ -265,17 +267,24 @@
   });
 
   var resetForm = function () {
+    var uploadImageInput = uploadForm.querySelector('#upload-file');
     effectLevelHandle.displayEffectRangeElement(DEFAULT_PICTURE_EFFECT);
+    uploadImageInput.value = '';
     imagePreview.resetPreview();
     window.utils.closePopup(framingWindow);
   };
 
-
+  // ------------------------------------------------------------------------------------------
+  // ----------------------- Отправка данных --------------------------------------------------
+  // ------------------------------------------------------------------------------------------
   uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(uploadForm), resetForm, window.backend.serverError);
   });
 
+  // ------------------------------------------------------------------------------------------
+  // -------------------- Внешние функции сброса формы-----------------------------------------
+  // ------------------------------------------------------------------------------------------
   window.form = {
     resetImage: function () {
       imagePreview.resetPreview();
