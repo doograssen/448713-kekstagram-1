@@ -280,6 +280,7 @@
   // ------------------------------------------------------------------------------------------
   window.form = {
     resetImage: function () {
+      imageSample.src = '';
       imagePreview.resetPreview();
     },
     resetEffect: function (effect) {
