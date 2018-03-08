@@ -9,6 +9,12 @@
   var START_RANGE_COORDINATE = 0;
   var END_RANGE_COORDINATE = 455;
   var INITIAL_RANGE_COORDINATE = 91;
+  var ERROR_MESSAGE = {
+    'hash': 'Проверьте правильность ввода хештегов ',
+    'count': 'Максимальное количество хештегов - пять ',
+    'length': 'Тег должен быть не длиннее 20-ти символов и не короче одного ',
+    'duplicate': 'Теги должны быть уникальными '
+  };
   var uploadForm = document.querySelector('#upload-select-image');
   var framingWindow = uploadForm.querySelector('.upload-overlay');
   var effectNumberInput = framingWindow.querySelector('.upload-effect-level-value');
@@ -21,28 +27,29 @@
   var hashTagInput = uploadForm.querySelector('.upload-form-hashtags');
   var imageSample = uploadForm.querySelector('.effect-image-preview');
   var comment = framingWindow.querySelector('.upload-form-description');
+
   // --------------------------------------------------------------------------------------------
   // ---------------------------------- валидация строки с хештегами-----------------------------
   // --------------------------------------------------------------------------------------------
   var hashTagString = {
-    pistureHashtags: [],
+    pictureHashtags: [],
     tagsCount: 0,
     tagChecks: {
       count: false,
       hash: false,
       length: false,
-      dublicate: false
+      duplicate: false
     },
     message: '',
     initTagsString: function () {
       var string = hashTagInput.value.replace(/\s+/g, ' ');
       string = string.trim();
-      this.pistureHashtags = string.split(' ');
-      this.tagsCount = this.pistureHashtags.length;
+      this.pictureHashtags = string.split(' ');
+      this.tagsCount = this.pictureHashtags.length;
       this.tagChecks.count = this.validateCount();
       this.tagChecks.hash = this.validateHash();
       this.tagChecks.length = this.validateLength();
-      this.tagChecks.dublicate = this.validateDuplicate(this.pistureHashtags);
+      this.tagChecks.duplicate = this.validateDuplicate(this.pictureHashtags);
       this.setMessage();
     },
     validateCount: function () {
@@ -50,25 +57,17 @@
     },
     validateHash: function () {
       var correctHash = true;
-      var i = 0;
-      var arraylength = this.pistureHashtags.length;
-
-      while ((i < arraylength) && (correctHash)) {
-        correctHash = (this.pistureHashtags[i].lastIndexOf('#') === 0);
-        i++;
+      var arrayLength = this.pictureHashtags.length;
+      for (var i = 0; correctHash && i < arrayLength; i++) {
+        correctHash = (this.pictureHashtags[i].lastIndexOf('#') === 0);
       }
       return correctHash;
     },
     validateLength: function () {
-      var i = 0;
       var hashtagCorrectLength = true;
-      while (i < this.tagsCount) {
-        var length = this.pistureHashtags[i].length;
-        if ((length < MIN_HASHTAG_LENGTH) || (length > MAX_HASHTAG_LENGTH)) {
-          hashtagCorrectLength = false;
-          break;
-        }
-        i++;
+      for (var i = 0; hashtagCorrectLength && i < this.tagsCount; i++) {
+        hashtagCorrectLength = this.pictureHashtags[i].length >= MIN_HASHTAG_LENGTH &&
+          this.pictureHashtags[i].length <= MAX_HASHTAG_LENGTH;
       }
       return hashtagCorrectLength;
     },
@@ -86,14 +85,10 @@
     },
     setMessage: function () {
       this.message = '';
-      if (!this.tagChecks.hash) {
-        this.message = 'Проверьте правильность ввода хештегов';
-      } else if (!this.tagChecks.count) {
-        this.message = 'Максимальное количество хештегов - пять';
-      } else if (!this.tagChecks.length) {
-        this.message = 'Тег должен быть не длиннее 20-ти символов и не короче одного';
-      } else if (this.tagChecks.dublicate) {
-        this.message = 'Теги должны быть уникальными';
+      for (var check in this.tagChecks) {
+        if (this.tagChecks.hasOwnProperty(check) && !this.tagChecks[check]) {
+          this.message += ERROR_MESSAGE[check];
+        }
       }
     }
   };
@@ -157,9 +152,9 @@
       if (effect !== DEFAULT_PICTURE_EFFECT) {
         effectRangeElement.style.display = 'block';
         this.initEffectRangeElement(effect);
-      } else {
-        effectRangeElement.style.display = 'none';
+        return;
       }
+      effectRangeElement.style.display = 'none';
     },
 
     setHandlePosition: function (value) {
@@ -249,11 +244,9 @@
   // -----------------------------Проверка ввода комментария-------------------------------------
   // --------------------------------------------------------------------------------------------
   comment.addEventListener('input', function (evt) {
-    var messageText = '';
+    var messageText;
     var evtTarget = evt.target;
-    if (evtTarget.value.length > MAX_COMMENT_LENGTH) {
-      messageText = 'Максимальная длина содержимого поля' + MAX_COMMENT_LENGTH;
-    }
+    messageText = (evtTarget.value.length > MAX_COMMENT_LENGTH) ? 'Максимальная длина содержимого поля' + MAX_COMMENT_LENGTH : '';
     evtTarget.setCustomValidity(messageText);
   });
 

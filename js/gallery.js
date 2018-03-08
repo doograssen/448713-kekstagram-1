@@ -37,12 +37,11 @@
   // --------------------------------------------------------------------------------------------
   // ------ Назначение обработчиков событий для всей галереи ------------------------------------
   // --------------------------------------------------------------------------------------------
-  function setGalleryListeners(picteresData) {
+  function setGalleryListeners(picturesData) {
     var arrayElements = picturesContainerElement.querySelectorAll('.picture');
-    var arrayLength = arrayElements.length;
-    for (var i = 0; i < arrayLength; i++) {
-      setPictureListeners(arrayElements[i], picteresData[i]);
-    }
+    arrayElements.forEach(function (item, i) {
+      setPictureListeners(item, picturesData[i]);
+    });
     var closeButton = overlay.querySelector('.gallery-overlay-close');
     setCloseBtnListener(closeButton, overlay);
   }
@@ -63,12 +62,13 @@
   // --------------------------------------------------------------------------------------------
   var galleryFilterSelect = function (attribute, picturesArray) {
     return picturesArray.slice().sort(function (a, b) {
-      if (attribute === 'comments') {
-        return b[attribute].length - a[attribute].length;
-      } else if (attribute === 'random') {
-        return Math.random() - 0.5;
-      } else {
-        return b[attribute] - a[attribute];
+      switch (attribute) {
+        case 'comments':
+          return b[attribute].length - a[attribute].length;
+        case 'random':
+          return Math.random() - 0.5;
+        default:
+          return b[attribute] - a[attribute];
       }
     });
   };

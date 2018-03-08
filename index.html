@@ -11,22 +11,22 @@
 
 <form class="filters filters-inactive" action="index.html" method="get" autocomplete="off">
   <input type="radio" id="filter-recommend" class="filters-radio" name="filter" value="recommend" checked>
-  <label for="filter-recommend" class="filters-item">Рекомендуемые</label>
+  <label for="filter-recommend" class="filters-item" tabindex="0">Рекомендуемые</label>
 
   <input type="radio" id="filter-popular" class="filters-radio" name="filter" value="popular">
-  <label for="filter-popular" class="filters-item">Популярные</label>
+  <label for="filter-popular" class="filters-item" tabindex="0">Популярные</label>
 
   <input type="radio" id="filter-discussed" class="filters-radio" name="filter" value="discussed">
-  <label for="filter-discussed" class="filters-item">Обсуждаемые</label>
+  <label for="filter-discussed" class="filters-item" tabindex="0">Обсуждаемые</label>
 
   <input type="radio" id="filter-random" class="filters-radio" name="filter" value="random">
-  <label for="filter-random" class="filters-item">Случайные</label>
+  <label for="filter-random" class="filters-item" tabindex="0">Случайные</label>
 </form>
 
 <form class="upload-form" id="upload-select-image" method="post" action = "https://js.dump.academy/kekstagram" enctype="multipart/form-data" autocomplete="off">
   <div class="upload-image">
     <input type="file" id="upload-file" class="upload-input" name="filename" required>
-    <label class="upload-file upload-control" for="upload-file"></label>
+    <label class="upload-file upload-control" for="upload-file" tabindex="0"></label>
   </div>
 
   <div class="upload-overlay hidden">
@@ -154,6 +154,7 @@
 <script src = "js/debounce.js"></script>
 <script src = "js/scaleControl.js"></script>
 <script src = "js/effectControl.js"></script>
+<script src = "js/fileUpload.js"></script>
 <script src = "js/backend.js"></script>
 <script src = "js/picture.js"></script>
 <script src = "js/preview.js"></script>

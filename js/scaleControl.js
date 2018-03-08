@@ -19,15 +19,13 @@
   };
 
   var adjustEffect = function (controlValueInput, modifier, handler) {
-    var border;
-    if (modifier === INC_FLAG) {
-      border = MAX_PERCENTAGE_SIZE;
-    } else if ((modifier === DEC_FLAG)) {
-      border = MIN_PERCENTAGE_SIZE;
-    }
+    var BORDER = {
+      'INC_FLAG': MAX_PERCENTAGE_SIZE,
+      'DEC_FLAG': MIN_PERCENTAGE_SIZE
+    };
     return function () {
       var size = getCurrentValue();
-      if (size !== border) {
+      if (size !== BORDER[modifier]) {
         setCurrentValue(size + modifier * PERCENTAGE_SIZE_INDENT);
         controlValueInput.value = getCurrentValue() + '%';
         handler(getCurrentValue());
